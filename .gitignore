@@ -19,3 +19,6 @@ android/
 ios/
 coverage/
 *.log
+
+# Ignore embedded frontend repo directory (use submodule if desired)
+JobTrackerFrontend/
