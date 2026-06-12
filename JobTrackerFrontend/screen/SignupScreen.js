@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TextInput,
   TouchableOpacity, SafeAreaView, Alert, ActivityIndicator, ScrollView,
+  KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { COLORS } from '../styles/theme';
@@ -12,6 +13,7 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
@@ -35,17 +37,22 @@ const SignupScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: COLORS.background }]}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
 
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.emoji}>💼</Text>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Start tracking your job applications</Text>
-        </View>
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.emoji}>💼</Text>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>Start tracking your job applications</Text>
+          </View>
 
-        {/* Form */}
-        <View style={[styles.form, { backgroundColor: COLORS.card }] }>
+          {/* Form */}
+          <View style={[styles.form, { backgroundColor: COLORS.card }] }>
           <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
@@ -67,14 +74,22 @@ const SignupScreen = ({ navigation }) => {
           />
 
           <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Min 6 characters"
-            placeholderTextColor="#9CA3AF"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[styles.input, styles.passwordInput]}
+              placeholder="Min 6 characters"
+              placeholderTextColor="#9CA3AF"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => setShowPassword((s) => !s)}
+            >
+              <Text>{showPassword ? '🙈' : '👁️'}</Text>
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity
             style={[styles.btn, loading && { opacity: 0.7, backgroundColor: COLORS.primary }]}
@@ -97,7 +112,8 @@ const SignupScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -120,6 +136,10 @@ const styles = StyleSheet.create({
     fontSize: 14, color: '#1a1a2e',
     borderWidth: 1, borderColor: '#E5E7EB',
   },
+
+  inputRow: { flexDirection: 'row', alignItems: 'center' },
+  passwordInput: { flex: 1, marginRight: 8 },
+  iconButton: { padding: 8 },
 
   btn: {
     backgroundColor: '#1A73E8', borderRadius: 14,
