@@ -21,4 +21,4 @@ coverage/
 *.log
 
 # Ignore embedded frontend repo directory (use submodule if desired)
-JobTrackerFrontend/
+# JobTrackerFrontend/  (unignored to include frontend in repo)
